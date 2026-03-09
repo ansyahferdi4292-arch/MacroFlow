@@ -7,6 +7,7 @@ import android.app.Service
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.IBinder
+import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -37,7 +38,8 @@ class FloatingWindowService : Service() {
     }
 
     private fun showFloatingIcon() {
-        val inflater = LayoutInflater.from(this)
+        val themedContext = ContextThemeWrapper(this, R.style.Theme_MacroFlow)
+        val inflater = LayoutInflater.from(themedContext)
         floatingIconView = inflater.inflate(R.layout.layout_floating_icon, null)
 
         val params = WindowManager.LayoutParams(

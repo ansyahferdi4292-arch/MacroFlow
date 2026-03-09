@@ -3,6 +3,7 @@ package com.macroflow.ui.floating
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.PixelFormat
+import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +26,8 @@ class FloatingMenuView(
     private var isRecording = false
 
     fun show(iconX: Int, iconY: Int) {
-        val inflater = LayoutInflater.from(context)
+        val themedContext = ContextThemeWrapper(context, R.style.Theme_MacroFlow)
+        val inflater = LayoutInflater.from(themedContext)
         binding = LayoutFloatingMenuBinding.inflate(inflater)
         rootView = binding.root
 
@@ -76,20 +78,19 @@ class FloatingMenuView(
     }
 
     private fun showNameInputDialog() {
-        val editText = EditText(context).apply {
+        val themedContext = ContextThemeWrapper(context, R.style.Theme_MacroFlow)
+        val editText = EditText(themedContext).apply {
             hint = context.getString(R.string.hint_recording_name)
             setPadding(40, 20, 40, 20)
         }
 
-        // AlertDialog needs FLAG_NOT_FOCUSABLE=false, so we create a window-based input
-        // Since we're in a Service context, we use an overlay dialog
-        val dialogView = android.widget.LinearLayout(context).apply {
+        val dialogView = android.widget.LinearLayout(themedContext).apply {
             orientation = android.widget.LinearLayout.VERTICAL
             setPadding(48, 32, 48, 16)
             addView(editText)
         }
 
-        val dialog = AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert)
+        val dialog = AlertDialog.Builder(themedContext)
             .setTitle(context.getString(R.string.dialog_record_title))
             .setView(dialogView)
             .setPositiveButton(context.getString(R.string.btn_ok)) { _, _ ->

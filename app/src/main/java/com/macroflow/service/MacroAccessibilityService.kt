@@ -2,6 +2,7 @@ package com.macroflow.service
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import com.macroflow.data.database.MacroDatabase
@@ -13,6 +14,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MacroAccessibilityService : AccessibilityService() {
+
+    // Tracks the last known scroll Y per view key to detect direction on API < 28
+    private val scrollPositions = HashMap<String, Int>()
 
     override fun onServiceConnected() {
         super.onServiceConnected()
@@ -51,12 +55,39 @@ class MacroAccessibilityService : AccessibilityService() {
             }
 
             AccessibilityEvent.TYPE_VIEW_SCROLLED -> {
-                val direction = when {
-                    event.scrollDeltaY > 0 -> SCROLL_DOWN
-                    event.scrollDeltaY < 0 -> SCROLL_UP
-                    else -> return
+                val direction: String
+                val distance: Int
+
+                // On API 28+, use scrollDeltaY for precise delta. If it is 0 (e.g. overscroll
+                // bounce), fall through to position-tracking as well.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && event.scrollDeltaY != 0) {
+                    direction = if (event.scrollDeltaY > 0) SCROLL_DOWN else SCROLL_UP
+                    distance = kotlin.math.abs(event.scrollDeltaY) * SCROLL_MULTIPLIER
+                } else {
+                    // Resolve source before accessing scrollY, then recycle immediately
+                    val source = event.source
+                    val currentScrollY: Int
+                    val windowId: Int
+                    if (source != null) {
+                        currentScrollY = source.scrollY
+                        windowId = source.windowId
+                        source.recycle()
+                    } else {
+                        currentScrollY = -1
+                        windowId = -1
+                    }
+
+                    // Include window ID to distinguish same-class views in different windows/screens
+                    val key = "${event.packageName}/${event.className}/$windowId"
+                    val prevScrollY = scrollPositions[key] ?: -1
+                    scrollPositions[key] = currentScrollY
+
+                    if (prevScrollY < 0 || currentScrollY < 0 || currentScrollY == prevScrollY) {
+                        return
+                    }
+                    direction = if (currentScrollY > prevScrollY) SCROLL_DOWN else SCROLL_UP
+                    distance = kotlin.math.abs(currentScrollY - prevScrollY) * SCROLL_MULTIPLIER
                 }
-                val distance = kotlin.math.abs(event.scrollDeltaY) * SCROLL_MULTIPLIER
 
                 // Use display center as approximate scroll position
                 val displayMetrics = resources.displayMetrics
@@ -85,6 +116,7 @@ class MacroAccessibilityService : AccessibilityService() {
 
     override fun onDestroy() {
         super.onDestroy()
+        scrollPositions.clear()
         instance = null
     }
 

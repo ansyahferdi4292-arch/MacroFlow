@@ -2,10 +2,12 @@ package com.macroflow.ui.list
 
 import android.content.Context
 import android.graphics.PixelFormat
+import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import com.macroflow.R
 import com.macroflow.data.database.MacroDatabase
 import com.macroflow.data.model.MacroRecording
 import com.macroflow.data.repository.MacroRepository
@@ -36,7 +38,8 @@ class MacroListBottomSheet(
     )
 
     fun show() {
-        val inflater = LayoutInflater.from(context)
+        val themedContext = ContextThemeWrapper(context, R.style.Theme_MacroFlow)
+        val inflater = LayoutInflater.from(themedContext)
         binding = LayoutBottomSheetMacrolistBinding.inflate(inflater)
         rootView = binding.root
 
