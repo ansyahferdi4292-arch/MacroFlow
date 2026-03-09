@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MacroFlow</string>
+    <string name="app_subtitle">Macro Recorder</string>
+    <string name="accessibility_service_description">MacroFlow membutuhkan Accessibility Service untuk merekam dan memutar ulang gestur layar.</string>
+    <string name="btn_activate">AKTIFKAN SEKARANG</string>
+    <string name="status_active">AKTIF ✅</string>
+    <string name="status_inactive">NONAKTIF ✕</string>
+    <string name="label_accessibility_service">Accessibility Service</string>
+    <string name="label_floating_button">Floating Button</string>
+    <string name="instruction_text">Setelah aktif, keluar dari aplikasi. Icon akan muncul di layar.</string>
+    <string name="btn_start_record">Mulai Rekam</string>
+    <string name="btn_list_recordings">List Rekaman</string>
+    <string name="btn_close_menu">Tutup Menu</string>
+    <string name="btn_stop_record">Hentikan Rekam</string>
+    <string name="hint_recording_name">Nama Rekaman</string>
+    <string name="dialog_record_title">Nama Rekaman Baru</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_cancel">Batal</string>
+    <string name="notification_channel_id">macroflow_channel</string>
+    <string name="notification_channel_name">MacroFlow Service</string>
+    <string name="notification_title">MacroFlow Aktif</string>
+    <string name="notification_text">Floating button aktif. Tap icon untuk membuka menu.</string>
+    <string name="label_recordings">Daftar Rekaman</string>
+    <string name="btn_play">▶ Play</string>
+    <string name="btn_delete">🗑 Hapus</string>
+    <string name="recording_status">Sedang Merekam…</string>
+    <string name="empty_recordings">Belum ada rekaman</string>
+</resources>
